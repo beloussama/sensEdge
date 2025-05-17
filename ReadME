@@ -1,4 +1,4 @@
-#edgeApp
+# edgeApp
 **A cutting-edge application built with [Python, Streamlit, Mosquitto MQTT ]**
 Welcome to our EdgeApp Project!
 This repository contains the complete codebase of our Edge Computing App – edgeApp – designed to simulate, process, and visualize real-time sensor data.
@@ -55,7 +55,6 @@ and running on your local machine or server.
 ###1. Cloning the Repository
 
 First, clone the `edgeApp` repository to your local machine:
-
 ```
 git clone
 [https://github.com/beloussama/edgeApp.git](https://github.com/belouss
@@ -68,10 +67,9 @@ cd edgeApp
 Before using Ansible to deploy or interact with VMs, make sure:
 
 You have generated a public/private key pair:
-
 ```
 ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
-
+```
 
 > Note: Add the public key (~/.ssh/id_rsa.pub) to the authorized_keys of the VM.
 
@@ -82,7 +80,7 @@ Make sure the private key path is correctly defined in the inventory.ini file (e
 ipadresstoVM ansible_user=VmUser ansible_ssh_private_key_file=/home/pathToPrivateKey
 ```
 
-###3. 🧾 MongoDB Configuration
+### 3. 🧾 MongoDB Configuration
 Update the MongoDB URI in  
  - model/model.py line 10
  - sensor_generator/sensor_generator_mqtt.py  line 16
