@@ -59,7 +59,7 @@ __First, clone the edgeApp repository to your local machine:__
 git clone
 https://github.com/beloussama/edgeApp.git
 ```
-__Go To The folder __
+__Go To The folder__
 ```
 cd edgeApp
 ```
@@ -73,7 +73,34 @@ __You have generated a public/private key pair:__
 ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 ```
 
-> Note: Add the public key (~/.ssh/id_rsa.pub) to the authorized_keys of the VM.
+> Note:
+> After generating the key, add the public key (~/.ssh/id_rsa.pub) to the ~/.ssh/authorized_keys file on the VM.
+> Ensure the following requirements are properly configured on the VM to allow SSH access:
+> __OpenSSH Server is installed:__
+>```
+> sudo apt update
+>sudo apt install openssh-server
+>```
+>__SSH service is running and enabled:__
+>```
+> sudo systemctl enable ssh
+>sudo systemctl start ssh
+>sudo systemctl status ssh
+>```
+>__Correct file permissions (critical for SSH to work securely):__
+> ```
+> chmod 700 ~/.ssh
+> chmod 600 ~/.ssh/authorized_keys
+> ```
+> __Port 22 is open on the firewall (if UFW or firewalld is enabled):__
+>```
+> sudo ufw allow ssh
+>sudo ufw enable
+>```
+>__You are logging in with the correct user and IP:__
+> ```
+> ssh your_user@your_vm_ip
+> ```
 
 __Make sure the private key path is correctly defined in the inventory.ini file (example below).__
 
