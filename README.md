@@ -74,8 +74,8 @@ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 ```
 
 > Note:
-> After generating the key, add the public key (~/.ssh/id_rsa.pub) to the ~/.ssh/authorized_keys file on the VM.
-> Ensure the following requirements are properly configured on the VM to allow SSH access:
+> After generating the key, add the public key (~/.ssh/id_rsa.pub) to the ~/.ssh/authorized_keys file on the VM.  
+> Ensure the following requirements are properly configured on the VM to allow SSH access:  
 > __OpenSSH Server is installed:__
 >```
 > sudo apt update
