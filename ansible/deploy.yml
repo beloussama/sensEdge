@@ -1,0 +1,82 @@
+---
+- name: Deploy Docker containers for Motor Monitoring (Image-based)
+  hosts: vmhosts
+  become: true
+
+  tasks:
+    - name: Install Docker and Docker Compose
+      apt:
+        name: [docker.io, docker-compose]
+        state: present
+        update_cache: yes
+
+    - name: Add user to docker group
+      user:
+        name: "{{ ansible_user }}"
+        group: docker
+        append: yes
+
+    - name: Start Docker
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Create project directory on remote
+      file:
+        path: /opt/motor_monitoring
+        state: directory
+
+    - name: Create Mosquitto config directory
+      file:
+        path: /opt/motor_monitoring/mosquitto
+        state: directory
+
+    - name: Create model directory
+      file:
+        path: /opt/motor_monitoring/model
+        state: directory
+
+    - name: Create Docker network motor_net
+      command: docker network create motor_net
+      ignore_errors: yes
+
+    - name: Copy docker-compose file (image-based)
+      copy:
+        src: ../docker-compose.images.yml
+        dest: /opt/motor_monitoring/docker-compose.images.yml
+
+    - name: Copy Mosquitto config
+      copy:
+        src: ../mosquitto/mosquitto.conf
+        dest: /opt/motor_monitoring/mosquitto/mosquitto.conf
+        mode: '0644'
+
+    - name: Copy model files
+      copy:
+        src: "../model/{{ item }}"
+        dest: "/opt/motor_monitoring/model/{{ item }}"
+      loop:
+        - motor_model_xgb.model
+        - label_mapping_xgb.json
+
+    - name: Copy Docker images
+      copy:
+        src: "../docker_images/{{ item }}"
+        dest: "/opt/motor_monitoring/{{ item }}"
+      loop:
+        - sensor_generator_image.tar
+        - edge_processor_image.tar
+        - streamlit_dashboard_image.tar
+
+    - name: Load Docker images
+      command: docker load -i /opt/motor_monitoring/{{ item }}
+      loop:
+        - sensor_generator_image.tar
+        - edge_processor_image.tar
+        - streamlit_dashboard_image.tar
+
+    - name: Launch containers from images
+      command: docker-compose -f docker-compose.images.yml up -d
+      args:
+        chdir: /opt/motor_monitoring

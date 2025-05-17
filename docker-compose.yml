@@ -1,0 +1,76 @@
+services:
+  mongo_db:
+    image: mongo:latest
+    container_name: mongo_db_v1
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  mosquitto_broker:
+    image: eclipse-mosquitto
+    container_name: mosquitto_broker_v1
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  sensor_generator_service:
+    build: ./sensor_generator
+    image: sensor_generator_image
+    container_name: sensor_generator_v1
+    depends_on:
+      - mosquitto_broker
+      - mongo_db
+    restart: on-failure
+    environment:
+      - MQTT_BROKER=mosquitto_broker
+      - MQTT_PORT=1883
+    networks:
+      - monitoring
+
+  edge_processor_service:
+    build: ./edge_processor
+    image: edge_processor_image
+    container_name: edge_processor_v1
+    depends_on:
+      - mosquitto_broker
+      - mongo_db
+    volumes:
+      - ./model/motor_model_xgb.model:/app/motor_model_xgb.model
+      - ./model/label_mapping_xgb.json:/app/label_mapping_xgb.json
+    restart: on-failure
+    environment:
+      - MQTT_BROKER=mosquitto_broker
+      - MQTT_PORT=1883
+    networks:
+      - monitoring
+
+  streamlit_dashboard_service:
+    build: ./streamlit_dashboard
+    image: streamlit_dashboard_image
+    container_name: streamlit_dashboard_v1
+    ports:
+      - "8501:8501"
+    depends_on:
+      - mosquitto_broker
+      - mongo_db
+    restart: on-failure
+    environment:
+      - MQTT_BROKER=mosquitto_broker
+      - MQTT_PORT=1883
+    networks:
+      - monitoring
+
+volumes:
+  mongo_data:
+
+networks:
+  monitoring:
+    external: true
