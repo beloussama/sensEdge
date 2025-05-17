@@ -54,19 +54,20 @@ and running on your local machine or server.
 ### Installation & Configuration
 ### 1. Cloning the Repository
 
-First, clone the edgeApp repository to your local machine:
+__First, clone the edgeApp repository to your local machine:__
 ```
 git clone
-[https://github.com/beloussama/edgeApp.git](https://github.com/belouss
-ama/edgeApp.git)
+https://github.com/beloussama/edgeApp.git
+```
+__Go To The folder __
+```
 cd edgeApp
 ```
-
 ### 2. 🔐 Generate SSH Keys (if needed)
 
 Before using Ansible to deploy or interact with VMs, make sure:
 
-You have generated a public/private key pair:
+__You have generated a public/private key pair:__
 
 ```
 ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
@@ -74,7 +75,7 @@ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
 
 > Note: Add the public key (~/.ssh/id_rsa.pub) to the authorized_keys of the VM.
 
-Make sure the private key path is correctly defined in the inventory.ini file (example below).
+__Make sure the private key path is correctly defined in the inventory.ini file (example below).__
 
 ```
 [vmhosts]
@@ -89,7 +90,7 @@ Update the MongoDB URI in
 
 ### Build and run all services:
 
-Inside your terminal run 
+__Inside your terminal run__
 
 ```
 docker-compose up --build
@@ -99,7 +100,7 @@ docker-compose up --build
 
 ## Access the Streamlit Dashboard:
 
-Open your browser and go to
+__Open your browser and go to__
 ```
 http://localhost:8501
 ```
